@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "name": "Update README Date on Solution Change",
+  "description": "When any file in the backend solution (*.cs, *.csproj, *.sln) is edited, the agent updates the README.md with the date of the change.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "**/*.cs",
+      "**/*.csproj",
+      "**/*.sln"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A solution file was just edited. Update the root README.md file with the following: 1) Add or update a \"Last Updated\" line near the top of the README with the current date in YYYY-MM-DD format. 2) Run `git diff --cached --stat` and `git log -1 --pretty=format:'%s'` to get the latest commit summary and changed files, then add or update a \"Recent Changes\" section in the README that lists what was changed in this commit (file names and a brief description of the changes). Keep the change log concise and readable."
+  }
+}
