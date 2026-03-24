@@ -1,0 +1,10 @@
+<h1>Welcome to {{ title }}!</h1>
+
+<div *ngIf="healthResponse" class="health-status">
+  <p>Status: {{ healthResponse.status }}</p>
+  <p>Timestamp: {{ healthResponse.timestamp }}</p>
+</div>
+
+<div *ngIf="errorMessage" class="health-error">
+  <p>{{ errorMessage }}</p>
+</div>
