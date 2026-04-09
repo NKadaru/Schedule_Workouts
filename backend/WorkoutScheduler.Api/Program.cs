@@ -1,10 +1,12 @@
 using System.Text.Json;
+using Scalar.AspNetCore;
 using WorkoutScheduler.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Register application services
 builder.Services.AddScoped<WeatherForecastService>();
+builder.Services.AddScoped<WorkoutService>();
 
 // Add controller support with camelCase JSON serialization
 builder.Services.AddControllers()
@@ -12,6 +14,9 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     });
+
+// Add OpenAPI document generation
+builder.Services.AddOpenApi();
 
 // Configure CORS to allow the Angular dev server origin
 builder.Services.AddCors(options =>
@@ -25,6 +30,10 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Enable OpenAPI + Scalar interactive docs
+app.MapOpenApi();
+app.MapScalarApiReference();
 
 app.UseCors();
 

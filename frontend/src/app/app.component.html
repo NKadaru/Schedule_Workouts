@@ -1,10 +1,55 @@
-<h1>Welcome to {{ title }}!</h1>
+<div class="app-container">
+  <h1>{{ title }}</h1>
 
-<div *ngIf="healthResponse" class="health-status">
-  <p>Status: {{ healthResponse.status }}</p>
-  <p>Timestamp: {{ healthResponse.timestamp }}</p>
-</div>
+  <div class="tabs">
+    <button
+      *ngFor="let day of days"
+      class="tab"
+      [class.active]="selectedDay === day"
+      (click)="selectDay(day)"
+      [attr.aria-selected]="selectedDay === day"
+      role="tab">
+      {{ day }}
+    </button>
+  </div>
 
-<div *ngIf="errorMessage" class="health-error">
-  <p>{{ errorMessage }}</p>
+  <div class="tab-content" role="tabpanel" [attr.aria-label]="selectedDay + ' workout plan'">
+    <h2>{{ selectedDay }}</h2>
+    <span class="day-badge" *ngIf="currentWorkouts.length > 0">
+      {{ currentWorkouts.length }} exercises
+    </span>
+
+    <div *ngIf="loading" class="placeholder">Loading workouts...</div>
+
+    <div *ngIf="!loading && currentWorkouts.length === 0" class="placeholder">
+      No workouts scheduled for {{ selectedDay }}.
+    </div>
+
+    <table *ngIf="!loading && currentWorkouts.length > 0" class="workout-table">
+      <thead>
+        <tr>
+          <th>Exercise</th>
+          <th>Sets</th>
+          <th>Reps</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let w of currentWorkouts">
+          <td>{{ w.name }}</td>
+          <td>{{ w.sets || '-' }}</td>
+          <td>{{ w.reps || '-' }}</td>
+          <td>{{ w.notes || '-' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="healthResponse" class="health-status">
+    <span class="status-dot"></span> API: {{ healthResponse.status }}
+  </div>
+
+  <div *ngIf="errorMessage" class="health-error">
+    <p>{{ errorMessage }}</p>
+  </div>
 </div>

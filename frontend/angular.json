@@ -1,4 +1,4 @@
-﻿{
+{
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -92,5 +92,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "5ab6cd8f-3d77-4923-9f79-c564ded3ca1e"
   }
 }
