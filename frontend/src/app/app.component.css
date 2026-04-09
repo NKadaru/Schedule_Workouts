@@ -1,0 +1,226 @@
+.app-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1 {
+  color: #e0e0e0;
+  margin-bottom: 0.4rem;
+  font-size: 2rem;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #6366f1, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero {
+  text-align: center;
+  padding: 1.5rem 0 1rem;
+}
+
+.quote {
+  color: #888;
+  font-size: 0.95rem;
+  font-style: italic;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: #1a1a1a;
+  padding: 6px;
+  border-radius: 10px;
+  overflow-x: auto;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+  position: relative;
+}
+
+.tab:hover {
+  color: #ccc;
+  background: #2a2a2a;
+}
+
+.tab.active {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(99, 102, 241, 0.35);
+  transform: scale(1.02);
+}
+
+.tab-content {
+  background: #1a1a1a;
+  border-radius: 10px;
+  padding: 2rem;
+  margin-top: 1rem;
+  min-height: 200px;
+  border: 1px solid #2a2a2a;
+  transition: border-color 0.3s ease;
+}
+
+.tab-content:hover {
+  border-color: #333;
+}
+
+.tab-content h2 {
+  color: #e0e0e0;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.3rem;
+}
+
+.tab-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.progress-text {
+  color: #8b5cf6;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: #2a2a2a;
+  border-radius: 3px;
+  margin: 0.75rem 0 1rem;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1, #a78bfa);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.day-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+  background: #2a2a2a;
+  color: #8b5cf6;
+}
+
+.placeholder {
+  color: #666;
+  font-style: italic;
+}
+
+.workout-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.workout-table th {
+  text-align: left;
+  color: #888;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 12px;
+  border-bottom: 2px solid #6366f1;
+}
+
+.workout-table td {
+  padding: 10px 12px;
+  color: #ccc;
+  border-bottom: 1px solid #222;
+  transition: background 0.15s ease;
+}
+
+.workout-table tr:last-child td {
+  border-bottom: none;
+}
+
+.workout-table tr:hover td {
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.workout-table td:first-child {
+  font-weight: 500;
+  color: #e0e0e0;
+}
+
+.health-status {
+  margin-top: 2rem;
+  color: #4caf50;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: #4caf50;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.health-error {
+  margin-top: 2rem;
+  color: #f44336;
+  font-size: 0.85rem;
+}
+
+.check-col {
+  width: 50px;
+  text-align: center;
+}
+
+.workout-table input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #6366f1;
+  cursor: pointer;
+}
+
+.completed-row td {
+  text-decoration: line-through;
+  color: #555 !important;
+}
+
+.congrats {
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 1.1rem;
+  color: #a78bfa;
+  font-weight: 600;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}

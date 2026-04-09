@@ -1,0 +1,23 @@
+{
+  "enabled": true,
+  "name": "Update README on File Edit",
+  "description": "When any project file is edited, update the README.md with the date and a gist of the changes.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "**/*.cs",
+      "**/*.csproj",
+      "**/*.slnx",
+      "**/*.json",
+      "**/*.ts",
+      "**/*.html",
+      "**/*.css",
+      "**/*.md"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A project file was just edited. Update the root README.md: 1) Update the 'Last Updated' line near the top with today's date (YYYY-MM-DD). 2) In the 'Recent Changes' section, add a concise bullet describing what was changed — include the file name and a brief gist of the change. Keep existing entries and prepend the new one at the top of the list. Do not remove old entries."
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "enabled": true,
+  "name": "Update README on File Created",
+  "description": "When a new project file is created, update the README.md with the date and a note about the new file.",
+  "version": "1",
+  "when": {
+    "type": "fileCreated",
+    "patterns": [
+      "**/*.cs",
+      "**/*.csproj",
+      "**/*.slnx",
+      "**/*.json",
+      "**/*.ts",
+      "**/*.html",
+      "**/*.css"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A new project file was just created. Update the root README.md: 1) Update the 'Last Updated' line near the top with today's date (YYYY-MM-DD). 2) In the 'Recent Changes' section, add a concise bullet noting the new file that was added and its purpose. Prepend it at the top of the list. Do not remove old entries."
+  },
+  "workspaceFolderName": "Schedule_Workouts",
+  "shortName": "update-readme-file-created"
+}
