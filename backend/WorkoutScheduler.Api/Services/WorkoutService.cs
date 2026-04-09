@@ -11,16 +11,16 @@ public class WorkoutService(IWebHostEnvironment env)
         PropertyNameCaseInsensitive = true
     };
 
-    public Dictionary<string, List<Workout>> GetAll()
+    public Dictionary<string, DayPlan> GetAll()
     {
         var json = File.ReadAllText(_filePath);
-        return JsonSerializer.Deserialize<Dictionary<string, List<Workout>>>(json, _jsonOptions)
-               ?? new Dictionary<string, List<Workout>>();
+        return JsonSerializer.Deserialize<Dictionary<string, DayPlan>>(json, _jsonOptions)
+               ?? new Dictionary<string, DayPlan>();
     }
 
-    public List<Workout> GetByDay(string day)
+    public DayPlan? GetByDay(string day)
     {
         var all = GetAll();
-        return all.TryGetValue(day, out var workouts) ? workouts : new List<Workout>();
+        return all.TryGetValue(day, out var plan) ? plan : null;
     }
 }

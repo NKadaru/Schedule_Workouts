@@ -7,3 +7,9 @@ public class Workout
     public int Reps { get; set; }
     public string Notes { get; set; } = string.Empty;
 }
+
+public class DayPlan
+{
+    public string Quote { get; set; } = string.Empty;
+    public List<Workout> Exercises { get; set; } = new();
+}

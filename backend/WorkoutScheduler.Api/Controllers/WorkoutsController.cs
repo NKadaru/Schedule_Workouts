@@ -23,10 +23,10 @@ public class WorkoutsController : ControllerBase
     [HttpGet("{day}")]
     public IActionResult GetByDay(string day)
     {
-        var workouts = _workoutService.GetByDay(day);
-        if (workouts.Count == 0)
+        var plan = _workoutService.GetByDay(day);
+        if (plan == null)
             return NotFound(new { message = $"No workouts found for {day}" });
 
-        return Ok(workouts);
+        return Ok(plan);
     }
 }

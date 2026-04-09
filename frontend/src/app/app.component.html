@@ -1,5 +1,8 @@
 <div class="app-container">
-  <h1>{{ title }}</h1>
+  <div class="hero">
+    <h1>{{ title }}</h1>
+    <p class="quote">{{ currentQuote }}</p>
+  </div>
 
   <div class="tabs">
     <button
@@ -14,20 +17,30 @@
   </div>
 
   <div class="tab-content" role="tabpanel" [attr.aria-label]="selectedDay + ' workout plan'">
-    <h2>{{ selectedDay }}</h2>
-    <span class="day-badge" *ngIf="currentWorkouts.length > 0">
-      {{ currentWorkouts.length }} exercises
-    </span>
+    <div class="tab-header">
+      <div>
+        <h2>{{ selectedDay }}</h2>
+        <span class="day-badge" *ngIf="currentWorkouts.length > 0">
+          {{ completedCount }}/{{ currentWorkouts.length }} done
+        </span>
+      </div>
+      <span class="progress-text" *ngIf="currentWorkouts.length > 0">{{ progressPercent }}%</span>
+    </div>
+
+    <div class="progress-bar" *ngIf="currentWorkouts.length > 0">
+      <div class="progress-fill" [style.width.%]="progressPercent"></div>
+    </div>
 
     <div *ngIf="loading" class="placeholder">Loading workouts...</div>
 
     <div *ngIf="!loading && currentWorkouts.length === 0" class="placeholder">
-      No workouts scheduled for {{ selectedDay }}.
+      Rest day — no workouts scheduled for {{ selectedDay }}. 😌
     </div>
 
     <table *ngIf="!loading && currentWorkouts.length > 0" class="workout-table">
       <thead>
         <tr>
+          <th class="check-col">Done</th>
           <th>Exercise</th>
           <th>Sets</th>
           <th>Reps</th>
@@ -35,7 +48,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let w of currentWorkouts">
+        <tr *ngFor="let w of currentWorkouts; let i = index"
+            [class.completed-row]="isComplete(i)">
+          <td class="check-col">
+            <input type="checkbox"
+                   [checked]="isComplete(i)"
+                   (change)="toggleComplete(i)"
+                   [attr.aria-label]="'Mark ' + w.name + ' as done'" />
+          </td>
           <td>{{ w.name }}</td>
           <td>{{ w.sets || '-' }}</td>
           <td>{{ w.reps || '-' }}</td>
@@ -43,6 +63,10 @@
         </tr>
       </tbody>
     </table>
+
+    <div *ngIf="progressPercent === 100 && currentWorkouts.length > 0" class="congrats">
+      🎉 All done! Great work today!
+    </div>
   </div>
 
   <div *ngIf="healthResponse" class="health-status">
