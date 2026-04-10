@@ -16,7 +16,8 @@
          class="chat-msg"
          [class.user]="msg.role === 'user'"
          [class.bot]="msg.role === 'model'">
-      {{ msg.content }}
+      <span *ngIf="msg.role === 'user'">{{ msg.content }}</span>
+      <span *ngIf="msg.role === 'model'" [innerHTML]="msg.content | markdown"></span>
     </div>
     <div *ngIf="loading" class="chat-msg bot typing">Thinking...</div>
   </div>

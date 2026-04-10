@@ -103,6 +103,40 @@
   font-style: italic;
 }
 
+.chat-msg.bot ol,
+.chat-msg.bot ul {
+  margin: 6px 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.chat-msg.bot li::before {
+  content: '• ';
+  color: #888;
+}
+
+.chat-msg.bot ol {
+  counter-reset: item;
+}
+
+.chat-msg.bot ol li::before {
+  counter-increment: item;
+  content: counter(item) '. ';
+}
+
+.chat-msg.bot li {
+  margin: 4px 0;
+}
+
+.chat-msg.bot a {
+  color: #a78bfa;
+  text-decoration: underline;
+}
+
+.chat-msg.bot strong {
+  color: #e0e0e0;
+}
+
 .chat-input {
   display: flex;
   gap: 8px;
