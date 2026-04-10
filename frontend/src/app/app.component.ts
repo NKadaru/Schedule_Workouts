@@ -4,6 +4,7 @@ import { HealthService } from './services/health.service';
 import { WorkoutService, DayPlan } from './services/workout.service';
 import { HealthResponse } from './models/health-response';
 import { Workout } from './models/workout';
+import { ChatComponent } from './chat/chat.component';
 
 const FALLBACK_DATA: Record<string, DayPlan> = {
   Monday: {
@@ -77,12 +78,12 @@ const FALLBACK_DATA: Record<string, DayPlan> = {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ChatComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
-  title = 'Workout Scheduler';
+  title = 'GrindFlow';
   healthResponse: HealthResponse | null = null;
   errorMessage: string | null = null;
 

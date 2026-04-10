@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Register application services
 builder.Services.AddScoped<WeatherForecastService>();
 builder.Services.AddScoped<WorkoutService>();
+builder.Services.AddHttpClient<GeminiAgentService>();
 
 // Add controller support with camelCase JSON serialization
 builder.Services.AddControllers()
