@@ -1,0 +1,145 @@
+.whoop-panel {
+  background: #1a1a1a;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+  border: 1px solid #2a2a2a;
+}
+
+.whoop-panel h3 {
+  color: #e0e0e0;
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+}
+
+.section-title {
+  color: #ccc;
+  font-size: 0.95rem;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.whoop-connect {
+  text-align: center;
+  padding: 1rem;
+}
+
+.whoop-connect p {
+  color: #888;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.whoop-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  border: 2px solid #4caf50;
+  color: #4caf50;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.whoop-btn:hover {
+  background: rgba(76, 175, 80, 0.1);
+  transform: scale(1.05);
+}
+
+.whoop-loading {
+  color: #888;
+  font-style: italic;
+  text-align: center;
+  padding: 1rem;
+}
+
+.whoop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.whoop-card {
+  background: #222;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+
+.whoop-label {
+  display: block;
+  color: #888;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.whoop-value {
+  display: block;
+  color: #e0e0e0;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.whoop-card.green { border-left: 3px solid #4caf50; }
+.whoop-card.green .whoop-value { color: #4caf50; }
+.whoop-card.yellow { border-left: 3px solid #ff9800; }
+.whoop-card.yellow .whoop-value { color: #ff9800; }
+.whoop-card.red { border-left: 3px solid #f44336; }
+.whoop-card.red .whoop-value { color: #f44336; }
+
+/* 30-Day Table */
+.whoop-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+}
+
+.whoop-table th {
+  text-align: left;
+  color: #888;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 12px;
+  border-bottom: 2px solid #4caf50;
+}
+
+.whoop-table td {
+  padding: 8px 12px;
+  color: #ccc;
+  border-bottom: 1px solid #222;
+  font-size: 0.88rem;
+}
+
+.whoop-table tr:hover td {
+  background: rgba(76, 175, 80, 0.06);
+}
+
+.whoop-table tr:last-child td {
+  border-bottom: none;
+}
+
+.recovery-badge {
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.recovery-badge.green {
+  border: 1px solid #4caf50;
+  color: #4caf50;
+}
+
+.recovery-badge.yellow {
+  border: 1px solid #ff9800;
+  color: #ff9800;
+}
+
+.recovery-badge.red {
+  border: 1px solid #f44336;
+  color: #f44336;
+}

@@ -26,6 +26,37 @@ h1 {
   font-style: italic;
 }
 
+.top-tabs {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+}
+
+.top-tab {
+  padding: 10px 28px;
+  border: 2px solid #333;
+  background: transparent;
+  color: #888;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 25px;
+  transition: all 0.25s ease;
+}
+
+.top-tab:hover {
+  color: #ccc;
+  border-color: #555;
+}
+
+.top-tab.active {
+  background: transparent;
+  border-color: #4caf50;
+  color: #4caf50;
+  box-shadow: 0 0 12px rgba(76, 175, 80, 0.25);
+}
+
 .tabs {
   display: flex;
   gap: 4px;

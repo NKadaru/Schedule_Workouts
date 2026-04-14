@@ -1,72 +1,90 @@
 <div class="app-container">
   <div class="hero">
     <h1>{{ title }}</h1>
-    <p class="quote">{{ currentQuote }}</p>
+    <p class="quote" *ngIf="activeView === 'schedule'">{{ currentQuote }}</p>
+    <p class="quote" *ngIf="activeView === 'whoop'">Your body's data, your edge.</p>
   </div>
 
-  <div class="tabs">
-    <button
-      *ngFor="let day of days"
-      class="tab"
-      [class.active]="selectedDay === day"
-      (click)="selectDay(day)"
-      [attr.aria-selected]="selectedDay === day"
-      role="tab">
-      {{ day }}
+  <div class="top-tabs">
+    <button class="top-tab" [class.active]="activeView === 'schedule'" (click)="activeView = 'schedule'">
+      🏋️ Schedule
+    </button>
+    <button class="top-tab" [class.active]="activeView === 'whoop'" (click)="activeView = 'whoop'">
+      ⌚ WHOOP
     </button>
   </div>
 
-  <div class="tab-content" role="tabpanel" [attr.aria-label]="selectedDay + ' workout plan'">
-    <div class="tab-header">
-      <div>
-        <h2>{{ selectedDay }}</h2>
-        <span class="day-badge" *ngIf="currentWorkouts.length > 0">
-          {{ completedCount }}/{{ currentWorkouts.length }} done
-        </span>
+  <!-- SCHEDULE VIEW -->
+  <div *ngIf="activeView === 'schedule'">
+    <div class="tabs">
+      <button
+        *ngFor="let day of days"
+        class="tab"
+        [class.active]="selectedDay === day"
+        (click)="selectDay(day)"
+        [attr.aria-selected]="selectedDay === day"
+        role="tab">
+        {{ day }}
+      </button>
+    </div>
+
+    <div class="tab-content" role="tabpanel" [attr.aria-label]="selectedDay + ' workout plan'">
+      <div class="tab-header">
+        <div>
+          <h2>{{ selectedDay }}</h2>
+          <span class="day-badge" *ngIf="currentWorkouts.length > 0">
+            {{ completedCount }}/{{ currentWorkouts.length }} done
+          </span>
+        </div>
+        <span class="progress-text" *ngIf="currentWorkouts.length > 0">{{ progressPercent }}%</span>
       </div>
-      <span class="progress-text" *ngIf="currentWorkouts.length > 0">{{ progressPercent }}%</span>
+
+      <div class="progress-bar" *ngIf="currentWorkouts.length > 0">
+        <div class="progress-fill" [style.width.%]="progressPercent"></div>
+      </div>
+
+      <div *ngIf="loading" class="placeholder">Loading workouts...</div>
+
+      <div *ngIf="!loading && currentWorkouts.length === 0" class="placeholder">
+        Rest day — no workouts scheduled for {{ selectedDay }}. 😌
+      </div>
+
+      <table *ngIf="!loading && currentWorkouts.length > 0" class="workout-table">
+        <thead>
+          <tr>
+            <th class="check-col">Done</th>
+            <th>Exercise</th>
+            <th>Sets</th>
+            <th>Reps</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let w of currentWorkouts; let i = index"
+              [class.completed-row]="isComplete(i)">
+            <td class="check-col">
+              <input type="checkbox"
+                     [checked]="isComplete(i)"
+                     (change)="toggleComplete(i)"
+                     [attr.aria-label]="'Mark ' + w.name + ' as done'" />
+            </td>
+            <td>{{ w.name }}</td>
+            <td>{{ w.sets || '-' }}</td>
+            <td>{{ w.reps || '-' }}</td>
+            <td>{{ w.notes || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div *ngIf="progressPercent === 100 && currentWorkouts.length > 0" class="congrats">
+        🎉 All done! Great work today!
+      </div>
     </div>
+  </div>
 
-    <div class="progress-bar" *ngIf="currentWorkouts.length > 0">
-      <div class="progress-fill" [style.width.%]="progressPercent"></div>
-    </div>
-
-    <div *ngIf="loading" class="placeholder">Loading workouts...</div>
-
-    <div *ngIf="!loading && currentWorkouts.length === 0" class="placeholder">
-      Rest day — no workouts scheduled for {{ selectedDay }}. 😌
-    </div>
-
-    <table *ngIf="!loading && currentWorkouts.length > 0" class="workout-table">
-      <thead>
-        <tr>
-          <th class="check-col">Done</th>
-          <th>Exercise</th>
-          <th>Sets</th>
-          <th>Reps</th>
-          <th>Notes</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let w of currentWorkouts; let i = index"
-            [class.completed-row]="isComplete(i)">
-          <td class="check-col">
-            <input type="checkbox"
-                   [checked]="isComplete(i)"
-                   (change)="toggleComplete(i)"
-                   [attr.aria-label]="'Mark ' + w.name + ' as done'" />
-          </td>
-          <td>{{ w.name }}</td>
-          <td>{{ w.sets || '-' }}</td>
-          <td>{{ w.reps || '-' }}</td>
-          <td>{{ w.notes || '-' }}</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div *ngIf="progressPercent === 100 && currentWorkouts.length > 0" class="congrats">
-      🎉 All done! Great work today!
-    </div>
+  <!-- WHOOP VIEW -->
+  <div *ngIf="activeView === 'whoop'">
+    <app-whoop></app-whoop>
   </div>
 
   <div *ngIf="healthResponse" class="health-status">

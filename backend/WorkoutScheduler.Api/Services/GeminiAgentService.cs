@@ -3,31 +3,25 @@ using WorkoutScheduler.Api.Models;
 
 namespace WorkoutScheduler.Api.Services;
 
-public class GeminiAgentService
+public class GeminiAgentService(
+    HttpClient httpClient,
+    WorkoutService workoutService,
+    WhoopService whoopService,
+    ILogger<GeminiAgentService> logger,
+    IConfiguration config)
 {
-    private readonly HttpClient _httpClient;
-    private readonly WorkoutService _workoutService;
-    private readonly ILogger<GeminiAgentService> _logger;
-    private readonly string _apiKey;
-    private readonly string _model;
-
-    public GeminiAgentService(
-        HttpClient httpClient,
-        WorkoutService workoutService,
-        ILogger<GeminiAgentService> logger,
-        IConfiguration config)
-    {
-        _httpClient = httpClient;
-        _workoutService = workoutService;
-        _logger = logger;
-        _apiKey = config["Groq:ApiKey"] ?? "";
-        _model = config["Groq:Model"] ?? "llama-3.3-70b-versatile";
-    }
+    private readonly HttpClient _httpClient = httpClient;
+    private readonly WorkoutService _workoutService = workoutService;
+    private readonly WhoopService _whoopService = whoopService;
+    private readonly ILogger<GeminiAgentService> _logger = logger;
+    private readonly string _apiKey = config["Groq:ApiKey"] ?? "";
+    private readonly string _model = config["Groq:Model"] ?? "llama-3.3-70b-versatile";
 
     public async Task<string> ChatAsync(string userMessage, List<ChatMessage> history)
     {
         var workoutContext = GetWorkoutContext();
-        var systemPrompt = BuildSystemPrompt(workoutContext);
+        var whoopContext = await GetWhoopContext();
+        var systemPrompt = BuildSystemPrompt(workoutContext, whoopContext);
 
         var messages = new List<Dictionary<string, string>>
         {
@@ -77,17 +71,55 @@ public class GeminiAgentService
         return ExtractReply(json);
     }
 
-    private string BuildSystemPrompt(string workoutContext)
+    private string BuildSystemPrompt(string workoutContext, string whoopContext)
     {
         return $"""
             You are GrindFlow AI, a friendly fitness assistant.
             Help users with workout advice, form tips, nutrition, and their schedule.
+            Use the WHOOP recovery data to make smart recommendations — if recovery is low (red/yellow), suggest lighter workouts or rest. If recovery is high (green), encourage pushing harder.
             
-            Current weekly plan:
+            Current weekly workout plan:
             {workoutContext}
             
+            {whoopContext}
+            
+            When suggesting workout changes, consider the user's recovery score, strain, and sleep.
             Keep responses concise and friendly.
             """;
+    }
+
+    private async Task<string> GetWhoopContext()
+    {
+        if (!_whoopService.IsConnected)
+            return "WHOOP is not connected — no recovery data available.";
+
+        try
+        {
+            var dashboard = await _whoopService.GetDashboardAsync();
+            var lines = new List<string>
+            {
+                "WHOOP data (today):",
+                $"  Recovery: {dashboard.RecoveryScore}% ({dashboard.RecoveryLevel})",
+                $"  Strain: {dashboard.Strain}",
+                $"  HRV: {dashboard.Hrv} ms",
+                $"  Resting Heart Rate: {dashboard.RestingHeartRate} bpm",
+                $"  Sleep: {dashboard.SleepHours} hours ({dashboard.SleepPerformance}% performance)",
+                "",
+                "Recent daily history:"
+            };
+
+            foreach (var day in dashboard.DailyHistory.Take(7))
+            {
+                lines.Add($"  {day.Date}: Recovery {day.Recovery}% ({day.RecoveryLevel}), Strain {day.Strain}, Sleep {day.SleepHours} hrs");
+            }
+
+            return string.Join("\n", lines);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Could not fetch WHOOP data for chatbot");
+            return "WHOOP data unavailable.";
+        }
     }
 
     private string GetWorkoutContext()

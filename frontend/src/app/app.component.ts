@@ -5,6 +5,7 @@ import { WorkoutService, DayPlan } from './services/workout.service';
 import { HealthResponse } from './models/health-response';
 import { Workout } from './models/workout';
 import { ChatComponent } from './chat/chat.component';
+import { WhoopComponent } from './whoop/whoop.component';
 
 const FALLBACK_DATA: Record<string, DayPlan> = {
   Monday: {
@@ -78,7 +79,7 @@ const FALLBACK_DATA: Record<string, DayPlan> = {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, ChatComponent],
+  imports: [CommonModule, ChatComponent, WhoopComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -92,6 +93,8 @@ export class AppComponent implements OnInit {
   dayPlans: Record<string, DayPlan> = {};
   loading = true;
   completed: Record<string, Set<number>> = {};
+
+  activeView: 'schedule' | 'whoop' = 'schedule';
 
   constructor(
     private healthService: HealthService,

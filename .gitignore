@@ -26,3 +26,4 @@ Thumbs.db
 
 # Secrets - don't commit API keys
 appsettings.Development.json
+whoop-token.json
