@@ -8,10 +8,12 @@ namespace WorkoutScheduler.Api.Controllers;
 public class WhoopController : ControllerBase
 {
     private readonly WhoopService _whoopService;
+    private readonly string _frontendRedirect;
 
-    public WhoopController(WhoopService whoopService)
+    public WhoopController(WhoopService whoopService, IConfiguration config)
     {
         _whoopService = whoopService;
+        _frontendRedirect = config["Whoop:FrontendRedirect"] ?? "http://localhost:4200";
     }
 
     [HttpGet("authorize")]
@@ -26,10 +28,9 @@ public class WhoopController : ControllerBase
         var success = await _whoopService.ExchangeCodeAsync(code);
         if (success)
         {
-            // Redirect back to the Angular app after successful auth
-            return Redirect("http://localhost:4200?whoop=connected");
+            return Redirect($"{_frontendRedirect}?whoop=connected");
         }
-        return Redirect("http://localhost:4200?whoop=error");
+        return Redirect($"{_frontendRedirect}?whoop=error");
     }
 
     [HttpGet("status")]

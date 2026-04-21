@@ -10,7 +10,15 @@ public class WhoopService
     private readonly IConfiguration _config;
     private readonly ILogger<WhoopService> _logger;
     private readonly string _tokenFilePath;
-    private const string BaseUrl = "https://api.prod.whoop.com";
+    private readonly string _baseUrl;
+    private readonly string _authorizePath;
+    private readonly string _tokenPath;
+    private readonly string _scopes;
+    private readonly string _cyclesPath;
+    private readonly string _recoveryPath;
+    private readonly string _sleepPath;
+    private readonly string _workoutsPath;
+    private readonly string _frontendRedirect;
 
     private static string? _accessToken;
     private static string? _refreshToken;
@@ -22,6 +30,15 @@ public class WhoopService
         _config = config;
         _logger = logger;
         _tokenFilePath = Path.Combine(env.ContentRootPath, "Data", "whoop-token.json");
+        _baseUrl = config["Whoop:BaseUrl"] ?? "https://api.prod.whoop.com";
+        _authorizePath = config["Whoop:AuthorizePath"] ?? "/oauth/oauth2/auth";
+        _tokenPath = config["Whoop:TokenPath"] ?? "/oauth/oauth2/token";
+        _scopes = config["Whoop:Scopes"] ?? "read:recovery read:cycles read:sleep read:workout read:profile";
+        _cyclesPath = config["Whoop:Endpoints:Cycles"] ?? "/developer/v2/cycle";
+        _recoveryPath = config["Whoop:Endpoints:Recovery"] ?? "/developer/v2/recovery";
+        _sleepPath = config["Whoop:Endpoints:Sleep"] ?? "/developer/v2/activity/sleep";
+        _workoutsPath = config["Whoop:Endpoints:Workouts"] ?? "/developer/v2/activity/workout";
+        _frontendRedirect = config["Whoop:FrontendRedirect"] ?? "http://localhost:4200";
         LoadTokenFromFile();
     }
 
@@ -74,13 +91,12 @@ public class WhoopService
     {
         var clientId = _config["Whoop:ClientId"];
         var redirectUri = _config["Whoop:RedirectUri"];
-        var scopes = "read:recovery read:cycles read:sleep read:workout read:profile";
-        return $"{BaseUrl}/oauth/oauth2/auth?client_id={clientId}&redirect_uri={Uri.EscapeDataString(redirectUri!)}&response_type=code&scope={Uri.EscapeDataString(scopes)}&state=grindflow";
+        return $"{_baseUrl}{_authorizePath}?client_id={clientId}&redirect_uri={Uri.EscapeDataString(redirectUri!)}&response_type=code&scope={Uri.EscapeDataString(_scopes)}&state=grindflow";
     }
 
     public async Task<bool> ExchangeCodeAsync(string code)
     {
-        var tokenUrl = $"{BaseUrl}/oauth/oauth2/token";
+        var tokenUrl = $"{_baseUrl}{_tokenPath}";
         var body = new FormUrlEncodedContent(new Dictionary<string, string>
         {
             ["grant_type"] = "authorization_code",
@@ -128,11 +144,11 @@ public class WhoopService
         {
             // Fetch all three data sets for the last 30 days
             var allCycles = await GetAllPagesAsync<WhoopCycle>(
-                $"/developer/v2/cycle?limit=25&start={oneMonthAgo}");
+                $"{_cyclesPath}?limit=25&start={oneMonthAgo}");
             var allRecoveries = await GetAllPagesAsync<WhoopRecovery>(
-                $"/developer/v2/recovery?limit=25&start={oneMonthAgo}");
+                $"{_recoveryPath}?limit=25&start={oneMonthAgo}");
             var allSleeps = await GetAllPagesAsync<WhoopSleep>(
-                $"/developer/v2/activity/sleep?limit=25&start={oneMonthAgo}");
+                $"{_sleepPath}?limit=25&start={oneMonthAgo}");
 
             _logger.LogInformation("Fetched {Cycles} cycles, {Recoveries} recoveries, {Sleeps} sleeps",
                 allCycles.Count, allRecoveries.Count, allSleeps.Count);
@@ -207,6 +223,33 @@ public class WhoopService
             dashboard.DailyHistory = dashboard.DailyHistory
                 .OrderByDescending(d => d.SortKey)
                 .ToList();
+
+            // Fetch running workouts
+            var allWorkouts = await GetAllPagesAsync<WhoopWorkout>(
+                $"{_workoutsPath}?limit=25&start={oneMonthAgo}");
+
+            foreach (var w in allWorkouts
+                .Where(w => w.SportName.Contains("running", StringComparison.OrdinalIgnoreCase)
+                         || w.SportName.Contains("run", StringComparison.OrdinalIgnoreCase)
+                         || w.SportId == 1) // sport_id 1 = running
+                .Where(w => w.Score != null && w.ScoreState == "SCORED"))
+            {
+                var startDt = DateTime.TryParse(w.Start, out var s) ? s : DateTime.MinValue;
+                var endDt = DateTime.TryParse(w.End, out var e) ? e : DateTime.MinValue;
+                var duration = endDt > startDt ? endDt - startDt : TimeSpan.Zero;
+                var distMiles = (w.Score!.DistanceMeter ?? 0) / 1609.344;
+
+                dashboard.RunningHistory.Add(new RunEntry
+                {
+                    Date = startDt != DateTime.MinValue ? startDt.ToString("MMM-dd") : w.Start[..10],
+                    DistanceMiles = Math.Round(distMiles, 2),
+                    Duration = $"{(int)duration.TotalMinutes}:{duration.Seconds:D2}",
+                    Strain = Math.Round(w.Score.Strain, 1),
+                    AvgHr = w.Score.AvgHeartRate,
+                    MaxHr = w.Score.MaxHeartRate,
+                    Calories = Math.Round(w.Score.Kilojoule / 4.184, 0)
+                });
+            }
         }
         catch (Exception ex)
         {
@@ -222,11 +265,11 @@ public class WhoopService
         var oneMonthAgo = DateTime.UtcNow.AddDays(-30).ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
 
         var cycles = await GetAllPagesAsync<WhoopCycle>(
-            $"/developer/v2/cycle?limit=3&start={oneMonthAgo}");
+            $"{_cyclesPath}?limit=3&start={oneMonthAgo}");
         var recoveries = await GetAllPagesAsync<WhoopRecovery>(
-            $"/developer/v2/recovery?limit=3&start={oneMonthAgo}");
+            $"{_recoveryPath}?limit=3&start={oneMonthAgo}");
         var sleeps = await GetAllPagesAsync<WhoopSleep>(
-            $"/developer/v2/activity/sleep?limit=3&start={oneMonthAgo}");
+            $"{_sleepPath}?limit=3&start={oneMonthAgo}");
 
         return new
         {
@@ -263,7 +306,7 @@ public class WhoopService
 
     private async Task<T?> GetAsync<T>(string path)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{BaseUrl}{path}");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseUrl}{path}");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
         var response = await _httpClient.SendAsync(request);
         var json = await response.Content.ReadAsStringAsync();
@@ -291,7 +334,7 @@ public class WhoopService
     {
         if (DateTime.UtcNow < _tokenExpiry || string.IsNullOrEmpty(_refreshToken)) return;
 
-        var tokenUrl = $"{BaseUrl}/oauth/oauth2/token";
+        var tokenUrl = $"{_baseUrl}{_tokenPath}";
         var body = new FormUrlEncodedContent(new Dictionary<string, string>
         {
             ["grant_type"] = "refresh_token",

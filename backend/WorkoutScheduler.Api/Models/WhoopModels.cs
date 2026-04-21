@@ -124,6 +124,7 @@ public class WhoopDashboard
     public List<DailyEntry> MonthlyStrain { get; set; } = new();
     public List<DailyEntry> MonthlySleep { get; set; } = new();
     public List<DailySummary> DailyHistory { get; set; } = new();
+    public List<RunEntry> RunningHistory { get; set; } = new();
 }
 
 public class DailyEntry
@@ -142,4 +143,49 @@ public class DailySummary
     public double? SleepHours { get; set; }
     [JsonIgnore]
     public string SortKey { get; set; } = "";
+}
+
+// WHOOP Workout (activity)
+public class WhoopWorkout
+{
+    [JsonPropertyName("id")]
+    public string Id { get; set; } = "";
+    [JsonPropertyName("start")]
+    public string Start { get; set; } = "";
+    [JsonPropertyName("end")]
+    public string End { get; set; } = "";
+    [JsonPropertyName("sport_name")]
+    public string SportName { get; set; } = "";
+    [JsonPropertyName("sport_id")]
+    public int SportId { get; set; }
+    [JsonPropertyName("score_state")]
+    public string ScoreState { get; set; } = "";
+    [JsonPropertyName("score")]
+    public WhoopWorkoutScore? Score { get; set; }
+}
+
+public class WhoopWorkoutScore
+{
+    [JsonPropertyName("strain")]
+    public double Strain { get; set; }
+    [JsonPropertyName("average_heart_rate")]
+    public int AvgHeartRate { get; set; }
+    [JsonPropertyName("max_heart_rate")]
+    public int MaxHeartRate { get; set; }
+    [JsonPropertyName("kilojoule")]
+    public double Kilojoule { get; set; }
+    [JsonPropertyName("distance_meter")]
+    public double? DistanceMeter { get; set; }
+}
+
+// Frontend-friendly running entry
+public class RunEntry
+{
+    public string Date { get; set; } = "";
+    public double DistanceMiles { get; set; }
+    public string Duration { get; set; } = "";
+    public double Strain { get; set; }
+    public int AvgHr { get; set; }
+    public int MaxHr { get; set; }
+    public double Calories { get; set; }
 }

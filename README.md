@@ -1,11 +1,26 @@
 # Workout Scheduler
 
-**Last Updated:** 2026-04-14
+**Last Updated:** 2026-04-17
 
 A full-stack workout scheduling application built with a .NET 10 backend and Angular 20 frontend.
 
 ## Recent Changes
 
+- `frontend/src/app/whoop/whoop.component.html` — Added `showRunningOnly` toggle support: conditionally renders WHOOP dashboard vs running-only view, wraps recovery/strain/sleep cards and 30-day history in an `ng-container` gated behind the flag, and truncates the running history section for the filtered view.
+- `frontend/src/app/app.component.html` — Added a "Running" view panel that renders the `<app-whoop>` component with a `[showRunningOnly]="true"` input, gated behind `activeView === 'running'`.
+- `frontend/src/app/app.component.ts` — Extended `activeView` type to include `'running'` as a third view option alongside `'schedule'` and `'whoop'`.
+- `frontend/src/app/app.component.css` — Added tab content panel, workout table, progress bar, day badge, completion row styling, congrats animation, and health error styles.
+- `frontend/src/app/app.component.css` — Replaced all previous styles (tabs, workout table, progress bar, congrats animation, etc.) with a fixed navbar, hamburger menu button with open/close animation, and a status indicator layout.
+- `frontend/src/app/app.component.html` — Replaced top tabs and inline schedule/WHOOP views with a navbar + hamburger sidebar navigation layout; removed schedule table, progress bar, chat component, and health status from the main template.
+- `frontend/src/app/app.component.ts` — Added `menuOpen` property to the app component for tracking menu open/close state.
+- `backend/WorkoutScheduler.Api/Services/WhoopService.cs` — Changed `GetAsync<T>` to use `_baseUrl` instance field instead of `BaseUrl` constant for the request URI.
+- `backend/WorkoutScheduler.Api/Services/WhoopService.cs` — Replaced hardcoded WHOOP API endpoint paths in `GetDashboardAsync` with configuration-driven field references (`_cyclesPath`, `_recoveryPath`, `_sleepPath`).
+- `backend/WorkoutScheduler.Api/Services/WhoopService.cs` — Replaced hardcoded `BaseUrl` constant with configuration-driven fields (`_baseUrl`, `_authorizePath`, `_tokenPath`, `_scopes`, endpoint paths, `_frontendRedirect`) read from `IConfiguration` with sensible defaults.
+- `backend/WorkoutScheduler.Api/appsettings.json` — Added WHOOP OAuth configuration: base URL, authorize/token paths, API scopes, v2 endpoint paths (cycles, recovery, sleep, workouts), and frontend redirect URL.
+- `frontend/src/app/whoop/whoop.component.html` — Added Running History table to the WHOOP dashboard displaying date, distance, duration, strain, heart rate, and calories for recent runs, with a fallback message when no running activities are recorded.
+- `backend/WorkoutScheduler.Api/Services/WhoopService.cs` — Completed `GetAsync<T>` with error return on failure, added `EnsureTokenAsync()` method for automatic OAuth token refresh using the stored refresh token.
+- `backend/WorkoutScheduler.Api/Models/WhoopModels.cs` — Added `WhoopWorkout`, `WhoopWorkoutScore`, and `RunEntry` models for WHOOP workout/activity data and a frontend-friendly running log entry.
+- `ideas.md` — Added future ideas/roadmap document covering PWA, Docker, SQLite, agent tool-calling, auth, analytics, third-party integrations (Strava, MyFitnessPal, Apple Health/Google Fit), and deployment options.
 - `backend/WorkoutScheduler.Api/Services/GeminiAgentService.cs` — Added `GetWhoopContext()` method that fetches today's WHOOP recovery, strain, HRV, RHR, sleep data and recent 7-day daily history for chatbot context.
 - `backend/WorkoutScheduler.Api/Services/GeminiAgentService.cs` — Injected `WhoopService` dependency into the Gemini agent service (constructor parameter + private field).
 - `backend/WorkoutScheduler.Api/Services/WhoopService.cs` — Added `SortKey` (raw date) to `DailySummary` and renamed local variable from `date` to `displayDate` for clarity.

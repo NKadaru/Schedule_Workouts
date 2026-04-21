@@ -1,60 +1,146 @@
-.app-container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: #1a1a1a;
+  border-bottom: 1px solid #2a2a2a;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  z-index: 100;
 }
 
-h1 {
-  color: #e0e0e0;
-  margin-bottom: 0.4rem;
-  font-size: 2rem;
-  letter-spacing: -0.5px;
+.navbar-title {
+  font-size: 1.2rem;
+  font-weight: 700;
   background: linear-gradient(135deg, #6366f1, #a78bfa);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  margin-left: 12px;
+}
+
+.navbar-spacer { flex: 1; }
+
+.navbar-status {
+  color: #4caf50;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: #4caf50;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse 2s infinite;
+}
+
+/* Burger */
+.burger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 4px;
+}
+
+.burger-line {
+  width: 24px;
+  height: 2px;
+  background: #ccc;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.burger-line.open:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.burger-line.open:nth-child(2) { opacity: 0; }
+.burger-line.open:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+/* Sidebar */
+.sidebar-overlay {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 90;
+}
+
+.sidebar {
+  position: fixed;
+  top: 56px;
+  left: -260px;
+  width: 250px;
+  bottom: 0;
+  background: #151515;
+  border-right: 1px solid #2a2a2a;
+  z-index: 95;
+  transition: left 0.3s ease;
+  padding: 1rem 0;
+}
+
+.sidebar.open { left: 0; }
+
+.sidebar-header {
+  color: #666;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0 20px 12px;
+  border-bottom: 1px solid #2a2a2a;
+  margin-bottom: 8px;
+}
+
+.sidebar-item {
+  display: block;
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  background: transparent;
+  color: #999;
+  font-size: 0.95rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sidebar-item:hover {
+  background: #1a1a1a;
+  color: #e0e0e0;
+}
+
+.sidebar-item.active {
+  color: #4caf50;
+  border-left: 3px solid #4caf50;
+  background: rgba(76, 175, 80, 0.06);
+}
+
+/* Main Content */
+.app-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 72px 2rem 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .hero {
   text-align: center;
-  padding: 1.5rem 0 1rem;
+  padding: 0.5rem 0 1rem;
 }
 
 .quote {
   color: #888;
   font-size: 0.95rem;
   font-style: italic;
-}
-
-.top-tabs {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-bottom: 1.2rem;
-}
-
-.top-tab {
-  padding: 10px 28px;
-  border: 2px solid #333;
-  background: transparent;
-  color: #888;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  border-radius: 25px;
-  transition: all 0.25s ease;
-}
-
-.top-tab:hover {
-  color: #ccc;
-  border-color: #555;
-}
-
-.top-tab.active {
-  background: transparent;
-  border-color: #4caf50;
-  color: #4caf50;
-  box-shadow: 0 0 12px rgba(76, 175, 80, 0.25);
 }
 
 .tabs {
@@ -78,20 +164,15 @@ h1 {
   border-radius: 8px;
   transition: all 0.25s ease;
   white-space: nowrap;
-  position: relative;
 }
 
-.tab:hover {
-  color: #ccc;
-  background: #2a2a2a;
-}
+.tab:hover { color: #ccc; background: #2a2a2a; }
 
 .tab.active {
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   color: #fff;
   font-weight: 600;
   box-shadow: 0 2px 10px rgba(99, 102, 241, 0.35);
-  transform: scale(1.02);
 }
 
 .tab-content {
@@ -101,12 +182,9 @@ h1 {
   margin-top: 1rem;
   min-height: 200px;
   border: 1px solid #2a2a2a;
-  transition: border-color 0.3s ease;
 }
 
-.tab-content:hover {
-  border-color: #333;
-}
+.tab-content:hover { border-color: #333; }
 
 .tab-content h2 {
   color: #e0e0e0;
@@ -120,11 +198,7 @@ h1 {
   align-items: flex-start;
 }
 
-.progress-text {
-  color: #8b5cf6;
-  font-weight: 700;
-  font-size: 1.2rem;
-}
+.progress-text { color: #8b5cf6; font-weight: 700; font-size: 1.2rem; }
 
 .progress-bar {
   width: 100%;
@@ -155,15 +229,9 @@ h1 {
   color: #8b5cf6;
 }
 
-.placeholder {
-  color: #666;
-  font-style: italic;
-}
+.placeholder { color: #666; font-style: italic; }
 
-.workout-table {
-  width: 100%;
-  border-collapse: collapse;
-}
+.workout-table { width: 100%; border-collapse: collapse; }
 
 .workout-table th {
   text-align: left;
@@ -180,55 +248,13 @@ h1 {
   padding: 10px 12px;
   color: #ccc;
   border-bottom: 1px solid #222;
-  transition: background 0.15s ease;
 }
 
-.workout-table tr:last-child td {
-  border-bottom: none;
-}
+.workout-table tr:last-child td { border-bottom: none; }
+.workout-table tr:hover td { background: rgba(99, 102, 241, 0.08); }
+.workout-table td:first-child { font-weight: 500; color: #e0e0e0; }
 
-.workout-table tr:hover td {
-  background: rgba(99, 102, 241, 0.08);
-}
-
-.workout-table td:first-child {
-  font-weight: 500;
-  color: #e0e0e0;
-}
-
-.health-status {
-  margin-top: 2rem;
-  color: #4caf50;
-  font-size: 0.85rem;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.status-dot {
-  width: 8px;
-  height: 8px;
-  background: #4caf50;
-  border-radius: 50%;
-  display: inline-block;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-.health-error {
-  margin-top: 2rem;
-  color: #f44336;
-  font-size: 0.85rem;
-}
-
-.check-col {
-  width: 50px;
-  text-align: center;
-}
+.check-col { width: 50px; text-align: center; }
 
 .workout-table input[type="checkbox"] {
   width: 18px;
@@ -237,10 +263,7 @@ h1 {
   cursor: pointer;
 }
 
-.completed-row td {
-  text-decoration: line-through;
-  color: #555 !important;
-}
+.completed-row td { text-decoration: line-through; color: #555 !important; }
 
 .congrats {
   text-align: center;
@@ -249,6 +272,13 @@ h1 {
   color: #a78bfa;
   font-weight: 600;
   animation: fadeIn 0.5s ease;
+}
+
+.health-error { margin-top: 2rem; color: #f44336; font-size: 0.85rem; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
 @keyframes fadeIn {

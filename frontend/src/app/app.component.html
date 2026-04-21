@@ -1,17 +1,41 @@
+<!-- Navbar -->
+<nav class="navbar">
+  <button class="burger" (click)="menuOpen = !menuOpen" aria-label="Toggle menu">
+    <span class="burger-line" [class.open]="menuOpen"></span>
+    <span class="burger-line" [class.open]="menuOpen"></span>
+    <span class="burger-line" [class.open]="menuOpen"></span>
+  </button>
+  <span class="navbar-title">{{ title }}</span>
+  <div class="navbar-spacer"></div>
+  <div *ngIf="healthResponse" class="navbar-status">
+    <span class="status-dot"></span> API
+  </div>
+</nav>
+
+<!-- Sidebar -->
+<div class="sidebar-overlay" *ngIf="menuOpen" (click)="menuOpen = false"></div>
+<aside class="sidebar" [class.open]="menuOpen">
+  <div class="sidebar-header">Menu</div>
+  <button class="sidebar-item" [class.active]="activeView === 'schedule'"
+          (click)="activeView = 'schedule'; menuOpen = false">
+    🏋️ Schedule
+  </button>
+  <button class="sidebar-item" [class.active]="activeView === 'whoop'"
+          (click)="activeView = 'whoop'; menuOpen = false">
+    ⌚ WHOOP
+  </button>
+  <button class="sidebar-item" [class.active]="activeView === 'running'"
+          (click)="activeView = 'running'; menuOpen = false">
+    🏃 Running
+  </button>
+</aside>
+
+<!-- Main Content -->
 <div class="app-container">
   <div class="hero">
-    <h1>{{ title }}</h1>
     <p class="quote" *ngIf="activeView === 'schedule'">{{ currentQuote }}</p>
     <p class="quote" *ngIf="activeView === 'whoop'">Your body's data, your edge.</p>
-  </div>
-
-  <div class="top-tabs">
-    <button class="top-tab" [class.active]="activeView === 'schedule'" (click)="activeView = 'schedule'">
-      🏋️ Schedule
-    </button>
-    <button class="top-tab" [class.active]="activeView === 'whoop'" (click)="activeView = 'whoop'">
-      ⌚ WHOOP
-    </button>
+    <p class="quote" *ngIf="activeView === 'running'">Every mile counts. Keep moving.</p>
   </div>
 
   <!-- SCHEDULE VIEW -->
@@ -87,8 +111,9 @@
     <app-whoop></app-whoop>
   </div>
 
-  <div *ngIf="healthResponse" class="health-status">
-    <span class="status-dot"></span> API: {{ healthResponse.status }}
+  <!-- RUNNING VIEW -->
+  <div *ngIf="activeView === 'running'">
+    <app-whoop [showRunningOnly]="true"></app-whoop>
   </div>
 
   <div *ngIf="errorMessage" class="health-error">

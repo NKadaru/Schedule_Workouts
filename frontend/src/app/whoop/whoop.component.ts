@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WhoopService, WhoopDashboard } from '../services/whoop.service';
 
@@ -10,6 +10,7 @@ import { WhoopService, WhoopDashboard } from '../services/whoop.service';
   styleUrl: './whoop.component.css'
 })
 export class WhoopComponent implements OnInit {
+  @Input() showRunningOnly = false;
   connected = false;
   dashboard: WhoopDashboard | null = null;
   loading = false;

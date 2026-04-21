@@ -1,69 +1,106 @@
 <div class="whoop-panel">
-  <h3>WHOOP Dashboard</h3>
+  <h3 *ngIf="!showRunningOnly">WHOOP Dashboard</h3>
+  <h3 *ngIf="showRunningOnly">🏃 Running</h3>
 
   <div *ngIf="!connected" class="whoop-connect">
-    <p>Connect your WHOOP to see recovery, strain, and sleep data.</p>
+    <p *ngIf="!showRunningOnly">Connect your WHOOP to see recovery, strain, and sleep data.</p>
+    <p *ngIf="showRunningOnly">Connect your WHOOP to see your running history.</p>
     <button class="whoop-btn" (click)="connect()">Connect WHOOP</button>
   </div>
 
-  <div *ngIf="connected && loading" class="whoop-loading">Loading WHOOP data...</div>
+  <div *ngIf="connected && loading" class="whoop-loading">Loading data...</div>
 
   <div *ngIf="connected && dashboard">
-    <!-- Today's Summary -->
-    <h4 class="section-title">Today</h4>
-    <div class="whoop-grid">
-      <div class="whoop-card" [class]="'whoop-card ' + dashboard.recoveryLevel">
-        <span class="whoop-label">Recovery</span>
-        <span class="whoop-value">{{ dashboard.recoveryScore ?? '-' }}%</span>
-      </div>
-      <div class="whoop-card">
-        <span class="whoop-label">Strain</span>
-        <span class="whoop-value">{{ dashboard.strain ?? '-' }}</span>
-      </div>
-      <div class="whoop-card">
-        <span class="whoop-label">HRV</span>
-        <span class="whoop-value">{{ dashboard.hrv ?? '-' }} ms</span>
-      </div>
-      <div class="whoop-card">
-        <span class="whoop-label">RHR</span>
-        <span class="whoop-value">{{ dashboard.restingHeartRate ?? '-' }} bpm</span>
-      </div>
-      <div class="whoop-card">
-        <span class="whoop-label">Sleep</span>
-        <span class="whoop-value">{{ dashboard.sleepHours ?? '-' }} hrs</span>
-      </div>
-      <div class="whoop-card">
-        <span class="whoop-label">Sleep Score</span>
-        <span class="whoop-value">{{ dashboard.sleepPerformance ?? '-' }}%</span>
-      </div>
-    </div>
 
-    <!-- 30-Day Table -->
-    <h4 class="section-title" *ngIf="dashboard.dailyHistory.length > 0">
-      30-Day History
-    </h4>
-    <table class="whoop-table" *ngIf="dashboard.dailyHistory.length > 0">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Recovery</th>
-          <th>Strain</th>
-          <th>Sleep (hrs)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let day of dashboard.dailyHistory">
-          <td>{{ day.date }}</td>
-          <td>
-            <span *ngIf="day.recovery !== null" [class]="'recovery-badge ' + day.recoveryLevel">
-              {{ day.recovery }}%
-            </span>
-            <span *ngIf="day.recovery === null">-</span>
-          </td>
-          <td>{{ day.strain ?? '-' }}</td>
-          <td>{{ day.sleepHours ?? '-' }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- WHOOP-only sections -->
+    <ng-container *ngIf="!showRunningOnly">
+      <h4 class="section-title">Today</h4>
+      <div class="whoop-grid">
+        <div class="whoop-card" [class]="'whoop-card ' + dashboard.recoveryLevel">
+          <span class="whoop-label">Recovery</span>
+          <span class="whoop-value">{{ dashboard.recoveryScore ?? '-' }}%</span>
+        </div>
+        <div class="whoop-card">
+          <span class="whoop-label">Strain</span>
+          <span class="whoop-value">{{ dashboard.strain ?? '-' }}</span>
+        </div>
+        <div class="whoop-card">
+          <span class="whoop-label">HRV</span>
+          <span class="whoop-value">{{ dashboard.hrv ?? '-' }} ms</span>
+        </div>
+        <div class="whoop-card">
+          <span class="whoop-label">RHR</span>
+          <span class="whoop-value">{{ dashboard.restingHeartRate ?? '-' }} bpm</span>
+        </div>
+        <div class="whoop-card">
+          <span class="whoop-label">Sleep</span>
+          <span class="whoop-value">{{ dashboard.sleepHours ?? '-' }} hrs</span>
+        </div>
+        <div class="whoop-card">
+          <span class="whoop-label">Sleep Score</span>
+          <span class="whoop-value">{{ dashboard.sleepPerformance ?? '-' }}%</span>
+        </div>
+      </div>
+
+      <h4 class="section-title" *ngIf="dashboard.dailyHistory.length > 0">30-Day History</h4>
+      <table class="whoop-table" *ngIf="dashboard.dailyHistory.length > 0">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Recovery</th>
+            <th>Strain</th>
+            <th>Sleep (hrs)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let day of dashboard.dailyHistory">
+            <td>{{ day.date }}</td>
+            <td>
+              <span *ngIf="day.recovery !== null" [class]="'recovery-badge ' + day.recoveryLevel">
+                {{ day.recovery }}%
+              </span>
+              <span *ngIf="day.recovery === null">-</span>
+            </td>
+            <td>{{ day.strain ?? '-' }}</td>
+            <td>{{ day.sleepHours ?? '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+
+    <!-- Running section (shown in both views, or running-only) -->
+    <ng-container *ngIf="showRunningOnly || !showRunningOnly">
+      <div *ngIf="showRunningOnly || dashboard.runningHistory.length > 0">
+        <h4 class="section-title" *ngIf="!showRunningOnly">🏃 Running History</h4>
+        <table class="whoop-table running-table" *ngIf="dashboard.runningHistory.length > 0">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Distance</th>
+              <th>Duration</th>
+              <th>Strain</th>
+              <th>Avg HR</th>
+              <th>Max HR</th>
+              <th>Calories</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let run of dashboard.runningHistory">
+              <td>{{ run.date }}</td>
+              <td>{{ run.distanceMiles }} mi</td>
+              <td>{{ run.duration }}</td>
+              <td>{{ run.strain }}</td>
+              <td>{{ run.avgHr }} bpm</td>
+              <td>{{ run.maxHr }} bpm</td>
+              <td>{{ run.calories }} kcal</td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="dashboard.runningHistory.length === 0" class="whoop-loading">
+          No running activities recorded in the last 30 days.
+        </div>
+      </div>
+    </ng-container>
+
   </div>
 </div>

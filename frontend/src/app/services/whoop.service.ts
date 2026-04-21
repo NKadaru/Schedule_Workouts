@@ -16,6 +16,16 @@ export interface DailySummary {
   sleepHours: number | null;
 }
 
+export interface RunEntry {
+  date: string;
+  distanceMiles: number;
+  duration: string;
+  strain: number;
+  avgHr: number;
+  maxHr: number;
+  calories: number;
+}
+
 export interface WhoopDashboard {
   recoveryScore: number | null;
   restingHeartRate: number | null;
@@ -28,6 +38,7 @@ export interface WhoopDashboard {
   monthlyStrain: DailyEntry[];
   monthlySleep: DailyEntry[];
   dailyHistory: DailySummary[];
+  runningHistory: RunEntry[];
 }
 
 @Injectable({ providedIn: 'root' })

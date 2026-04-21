@@ -94,7 +94,8 @@ export class AppComponent implements OnInit {
   loading = true;
   completed: Record<string, Set<number>> = {};
 
-  activeView: 'schedule' | 'whoop' = 'schedule';
+  activeView: 'schedule' | 'whoop' | 'running' = 'schedule';
+  menuOpen = false;
 
   constructor(
     private healthService: HealthService,
